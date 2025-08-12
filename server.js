@@ -18,13 +18,13 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 
-// const corsConfig = {
-//     origin: 'your frontend link here', 
-//     methods: ['GET', 'POST', 'PUT', 'DELETE'], 
-//     credentials: true, 
-//   };
+const corsConfig = {
+     origin: 'your frontend link here', 
+     methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+    credentials: true, 
+  };
 
- app.use(cors());
+ app.use(cors(corsConfig));
 app.use(express.json());
 
 const connection = new Connection(clusterApiUrl('mainnet-beta'), 'confirmed');
@@ -208,3 +208,4 @@ app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 
 });
+
