@@ -19,7 +19,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 const corsConfig = {
-     origin: 'your frontend link here', 
+     origin: 'https://solairdrop-b0b9.onrender.com', 
      methods: ['GET', 'POST', 'PUT', 'DELETE'], 
     credentials: true, 
   };
@@ -208,4 +208,5 @@ app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 
 });
+
 
